@@ -1,15 +1,10 @@
 import { Container, Form, Button } from 'react-bootstrap';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { useRef, useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import Axios from "axios";
 import './App.css';
-
-import io from 'socket.io-client'
-const socket = io.connect('http://localhost:5000');
-
-//
 
 function App() {
   const [password, setPass] = useState('');
@@ -34,11 +29,10 @@ function App() {
 
   const RegisterSubmit = (event) => {
     event.preventDefault();
-    Axios.post("http://localhost:8000/apiv1/users/signup", {
+    Axios.post("http://localhost:5000/apiv1/users/signup", {
       password,
       username,
       email
-      // Khi dữ liệu đăng kí được gửi tới server
     }).then((response) => {
       toast.success("You have successfully registered!", {
         position: "top-right",
@@ -51,10 +45,7 @@ function App() {
         theme: "light",
       });
       console.log("success!"); 
-      // Chuyển hướng về trang home sau khi đăng kí thành công
       setTimeout(() => {navigate("/home")}, 1200);
-      
-      // Khi dữ liệu đăng kí không được gửi tới server
     }).catch((error) => {
       console.log("error!");
       toast.error("Registration failed!", {
@@ -73,15 +64,11 @@ function App() {
   return (
     <Container id='main-container' className='d-grid h-100'>
       <div id='c-fix-div'>
-
-
-         {/* Khi user bấm sign in thì sẽ bắt sự kiện oSubmit sau đó chạy hàm RegisterSubmit */}
         <Form id='register-form' className='text-center w-100 form-bg' onSubmit={RegisterSubmit}>
           <img className='mb-4 app-logo'
             src='https://ou.edu.vn/wp-content/uploads/2016/08/Logo.png'
             alt='App Logo' />
           <h1 className='mb-4 fs-3 fw-normal biggerText'>Please sign up</h1>
-
           <Form.Group controlId='sign-in-email-address'>
             <Form.Control onChange={emailSet} value={email} required type='email' size='lg' placeholder='Email' autoComplete='username' className='mb-1 position-relative formInput'></Form.Control>
           </Form.Group>
@@ -91,12 +78,9 @@ function App() {
           <Form.Group controlId='sign-in-password' className='mb-3'>
             <Form.Control onChange={passwordSet} value={password} required type='password' size='lg' placeholder='Password' autoComplete='current-password' className='mb-2 position-relative formInput'></Form.Control>
           </Form.Group>
-
           <div className='d-grid'>
             <Button variant='primary' size='lg' type='submit'>Sign Up</Button>
           </div>
-
-          {/* Khi user bấm vào đã có tài khoản thì sẽ nhảy sang trang login */}
           <Link className='mb-2 position-relative linkText' to="/login">Do you have an account?</Link>
           <p className='mt-4 littleText'>&copy; 2024-2025 ChatAppReact</p>
         </Form>

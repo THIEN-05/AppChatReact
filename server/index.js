@@ -1,54 +1,54 @@
-// Import framework express
 const express = require('express');
-// Import giao thức http
 const http = require("http");
-// Import class của thư viện socket.io
 const { Server } = require('socket.io');
-// Import cors
 const cors = require('cors');
-const { Socket } = require('dgram');
-const { log } = require('console');
-var port = 5000;
-const connectDB = require('../configs/dataBase');
+const mongoose = require('mongoose');
+const Account = require('../models/account_model'); // Import model
 
+const port = 5000;
+const connectDB = require('../configs/dataBase');
 
 connectDB(); // Kết nối DB
 
-// Khai báo đối tượng của express
-const app = express()
+const app = express();
 app.use(cors());
+app.use(express.json()); // Middleware để parse JSON
 
-
-// Khai báo server chạy bằng giao thức http dựa trên đối tượng của express
 const server = http.createServer(app);
 
-
-
-
-
-// Tạo đối tượng đại diện cho socket.io (tích hợp thư viện vào server)
 const io = new Server(server, {
     cors: {
-        // Địa chỉ tới front-end
+        // Địa chỉ của frontend
         origin: "http://localhost:3000",
         methods: ["GET", "POST"],
     },
 });
 
-
-// Lắng nghe sự kiện kết nối của client, biến socket đại diện cho client
 io.on('connection', (socket) => {
     console.log("A user connected");
 
-
-    socket.on('disconnect', () =>{
+    socket.on('disconnect', () => {
         console.log("A user disconnected");
-    })
-
+    });
 });
 
+// Endpoint cho đăng ký người dùng
+app.post('/apiv1/users/signup', async (req, res) => {
+    const { username, password, email } = req.body;
 
-// Khởi động server HTTP
+    if (!username || !password || !email) {
+        return res.status(400).json({ message: 'Thiếu thông tin đăng ký' });
+    }
+
+    try {
+        const newUser = new Account({ userName: username, passWord: password });
+        await newUser.save();
+        res.status(200).json({ message: 'Đăng ký thành công!' });
+    } catch (error) {
+        res.status(500).json({ message: 'Đăng ký thất bại!', error: error.message });
+    }
+});
+
 server.listen(port, () => {
-    console.log(`Running server at port ${port}`)
+    console.log(`Running server at port ${port}`);
 });
