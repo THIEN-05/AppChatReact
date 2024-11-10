@@ -1,0 +1,67 @@
+#chat-h {
+    text-align: center;
+    margin: 1%;
+    display: block;
+}
+
+.tag{
+    margin-top: 1%;
+    padding: 30px 300px;
+    background: rgba(255, 255, 255, 0.062);
+    backdrop-filter: blur(6px);
+    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.055);
+    border-radius: 12px;
+    position: fixed;
+    z-index: 1;
+}
+
+.message {
+    background: rgba(255, 255, 255, 0.062);
+    backdrop-filter: blur(20px);
+    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.055);
+    border-radius: 12px;
+    border: 5px solid rgba(132, 99, 194, 0.308);
+    padding: 30px;
+    inline-size: 500px;
+    overflow-wrap: break-word;
+    color: rgb(211, 211, 211);
+    float: left;
+}
+
+#li-obj{
+    list-style: none;
+}
+
+#msg-text{
+    width: 100%;
+    background: rgba(255, 255, 255, 0.062);
+    backdrop-filter: blur(6px);
+    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.055);
+    border: none;
+    height: 75px;
+}
+
+#msg-text:focus{
+    outline: none;
+}
+
+#msg-text::placeholder{
+    color: white;
+    font-size: large;
+    font-weight: 600;
+}
+
+.messageBar{
+    width: 100%;
+    background: rgba(255, 255, 255, 0.062);
+    backdrop-filter: blur(6px);
+    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.055);
+    border-radius: 8px;
+    height: 75px;
+}
+
+.msg-txt{
+    display: block;
+    inline-size: 300px;
+    overflow-wrap: break-word;
+}
