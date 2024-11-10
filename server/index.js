@@ -9,13 +9,22 @@ const cors = require('cors');
 const { Socket } = require('dgram');
 const { log } = require('console');
 var port = 5000;
+const connectDB = require('../configs/dataBase');
+
+
+connectDB(); // Kết nối DB
 
 // Khai báo đối tượng của express
 const app = express()
 app.use(cors());
 
+
 // Khai báo server chạy bằng giao thức http dựa trên đối tượng của express
 const server = http.createServer(app);
+
+
+
+
 
 // Tạo đối tượng đại diện cho socket.io (tích hợp thư viện vào server)
 const io = new Server(server, {
