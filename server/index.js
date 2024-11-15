@@ -12,7 +12,8 @@ connectDB(); // Kết nối DB
 
 const app = express();
 app.use(cors());
-app.use(express.json()); // Middleware để parse JSON
+
+
 
 const server = http.createServer(app);
 
@@ -32,22 +33,7 @@ io.on('connection', (socket) => {
     });
 });
 
-// Endpoint cho đăng ký người dùng
-app.post('/apiv1/users/signup', async (req, res) => {
-    const { username, password, email } = req.body;
 
-    if (!username || !password || !email) {
-        return res.status(400).json({ message: 'Thiếu thông tin đăng ký' });
-    }
-
-    try {
-        const newUser = new Account({ userName: username, passWord: password });
-        await newUser.save();
-        res.status(200).json({ message: 'Đăng ký thành công!' });
-    } catch (error) {
-        res.status(500).json({ message: 'Đăng ký thất bại!', error: error.message });
-    }
-});
 
 server.listen(port, () => {
     console.log(`Running server at port ${port}`);

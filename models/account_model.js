@@ -4,9 +4,8 @@ const { type } = require('os');
 const { stringify } = require('querystring');
 const { setTheUsername } = require('whatwg-url');
 
+// Định nghĩa cấu trúc cấu trúc của document (bản ghi) trong collection (bảng)
 
-// Class (bảng thiết kế, không ) 
-// Đã tự động sinh ra id
 const accountSchema = new mongoose.Schema({
     // Bao gồm các trường dữ liệu
     userName:{
@@ -22,5 +21,6 @@ const accountSchema = new mongoose.Schema({
     versionKey: false
 })
 
-// Tạo ra model để sử dụng schema (bảng vẽ)
+// Tạo ra model để qản lý 1 bảng (collection) trong mongoDB
 module.exports = mongoose.model('account', accountSchema);
+// xuất ra để sử dụng ở các file khác
