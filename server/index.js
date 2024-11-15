@@ -1,18 +1,16 @@
+const port = 5000;
 const express = require('express');
 const http = require("http");
 const { Server } = require('socket.io');
 const cors = require('cors');
-const mongoose = require('mongoose');
-const Account = require('../models/account_model'); // Import model
-
-const port = 5000;
+const router = require('./routers/index');
 const connectDB = require('../configs/dataBase');
-
 connectDB(); // Kết nối DB
 
 const app = express();
 app.use(cors());
 
+router(app);
 
 
 const server = http.createServer(app);
