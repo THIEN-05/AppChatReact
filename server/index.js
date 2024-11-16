@@ -15,10 +15,8 @@ connectDB(); // Kết nối DB
 
 
 
-
-app.post('/users/signup', (req, res) => {
-    console.log(req.body)
-});
+// Lắng nghe request đăng ký và đăng nhập
+app.post('/users/signup', register);
 app.post('/users/signin', login);
 
 

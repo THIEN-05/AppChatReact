@@ -7,25 +7,15 @@ module.exports = {
 
     // tên: phương thức
     register: (req, res) => {
+        // Tự động gán giá trị cùng tên từ body vào biến
+        const { username, password, email } = req.body;
 
-        const password = req.body.password;
-        const username = req.body.username;
-        const email = req.body.email;
-
-        // Kiểm tra email đã tồn tại chưa
-        const account = accountModel.findOne({ email });
-        if (account) {
-            return res.status(400).json("Email already exists!");
-        }
-
-        // Tạo tài khoản mới theo mô hình
         const newAccount = new accountModel({
             username,
             password,
             email
         });
 
-        // Lưu tài khoản mới vào DB
         newAccount.save()
             .then(() => {
                 res.status(200).json("Account created!");
@@ -33,12 +23,11 @@ module.exports = {
             .catch((error) => {
                 res.status(400).json("Error: " + error);
             });
-
     },
 
     login: async (req, res) => {
-        const email = req.body.email;
-        const password = req.body.password;
+        // Tự động gán giá trị cùng tên từ body vào biến
+        const { email, password } = req.body;
 
         try {
             // Tìm tài khoản trong DB
