@@ -1,4 +1,5 @@
 // Quy định cấu trúc của account
+const e = require('express');
 const mongoose = require('mongoose');
 const { type } = require('os');
 const { stringify } = require('querystring');
@@ -8,12 +9,17 @@ const { setTheUsername } = require('whatwg-url');
 
 const accountSchema = new mongoose.Schema({
     // Bao gồm các trường dữ liệu
-    userName:{
+    username:{
         type: String,
-        require: true,
+        require: true, // Bắt buộc
         unique: true // Độc quyền
     },
-    passWord:{
+    email:{
+        type: String,
+        require: true,
+        unique: true
+    }, 
+    password:{
         type: String,
         require: true
     }

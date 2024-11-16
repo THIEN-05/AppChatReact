@@ -5,7 +5,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import Axios from "axios";
 import './Home.css';
-
+import io from "socket.io-client";
+// Kết nối tới server
+const socket = io("http://localhost:5000");
 
 
 function HomePage() {

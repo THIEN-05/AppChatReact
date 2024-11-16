@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 import Axios from "axios";
 import './Login.css';
 
+
 function LoginPage() {
 
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function LoginPage() {
 
   const LoginSubmit = (event) => {
     event.preventDefault();
-    Axios.post("http://localhost:8000/apiv1/users/login", {
+    Axios.post("http://localhost:5000/users/signup", {
       password,
       email
     }).then((response) => {

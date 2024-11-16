@@ -3,16 +3,24 @@ const http = require("http");
 const { Server } = require('socket.io');
 const cors = require('cors');
 const connectDB = require('../configs/dataBase');
-const router = require('../routers/index');
-
 const port = 5000;
 const app = express();
 app.use(cors());
+
 app.use(express.json()); // Thêm middleware này để phân tích cú pháp JSON
+
+const { login, register } = require('../controllers/account_controller');
 
 connectDB(); // Kết nối DB
 
-router(app);
+
+
+
+app.post('/users/signup', register);
+app.post('/users/signin', (req, res) => {
+    console.log("Sign in");
+});
+
 
 const server = http.createServer(app);
 

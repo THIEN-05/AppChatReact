@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Axios from "axios";
 import './App.css';
 
+
 function App() {
   const [password, setPass] = useState('');
   const [username, setUsername] = useState('');
@@ -29,7 +30,7 @@ function App() {
 
   const RegisterSubmit = (event) => {
     event.preventDefault();
-    Axios.post("http://localhost:5000/apiv1/users/signup", {
+    Axios.post("http://localhost:5000/users/signup", {
       password,
       username,
       email
