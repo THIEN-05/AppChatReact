@@ -16,10 +16,10 @@ connectDB(); // Kết nối DB
 
 
 
-app.post('/users/signup', register);
-app.post('/users/signin', (req, res) => {
-    console.log("Sign in");
+app.post('/users/signup', (req, res) => {
+    console.log(req.body)
 });
+app.post('/users/signin', login);
 
 
 const server = http.createServer(app);

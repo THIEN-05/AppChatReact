@@ -1,17 +1,16 @@
 import { Container, Form, Button } from 'react-bootstrap';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import Axios from "axios";
 import './Login.css';
 
-
 function LoginPage() {
-
   const navigate = useNavigate();
   const [password, setPass] = useState('');
   const [email, setMail] = useState('');
+
   const passwordSet = event => {
     const newPassword = event.target.value;
     setPass(newPassword);
@@ -24,12 +23,12 @@ function LoginPage() {
 
   const LoginSubmit = (event) => {
     event.preventDefault();
-    Axios.post("http://localhost:5000/users/signup", {
+    Axios.post("http://localhost:5000/users/signin", {
       password,
       email
     }).then((response) => {
-      console.log("sucess!");
-      toast.success("You have successfully logined!", {
+      console.log("success!");
+      toast.success("You have successfully logged in!", {
         position: "top-right",
         autoClose: 800,
         hideProgressBar: true,
@@ -63,23 +62,18 @@ function LoginPage() {
           <img className='mb-4 app-logo'
             src='https://ou.edu.vn/wp-content/uploads/2016/08/Logo.png'
             alt='App Logo' />
-
           <h1 className='mb-4 fs-3 fw-normal biggerText'>Please sign in</h1>
-
           <Form.Group controlId='sign-in-email-address'>
             <Form.Control onChange={emailSet} value={email} required type='email' size='lg' placeholder='Email' autoComplete='username' className='mb-1 position-relative formInput'></Form.Control>
           </Form.Group>
-
           <Form.Group controlId='sign-in-password' className='mb-3'>
             <Form.Control onChange={passwordSet} value={password} required type='password' size='lg' placeholder='Password' autoComplete='current-password' className='mb-2 position-relative formInput'></Form.Control>
           </Form.Group>
-
           <div className='d-grid'>
             <Button variant='primary' size='lg' type='submit'>Sign In</Button>
           </div>
           <Link className='mb-2 position-relative linkText' to="/">Don't have an account?</Link>
           <p className='mt-4 littleText'>&copy; 2024-2025 ChatAppReact</p>
-
         </Form>
       </div>
     </Container>
