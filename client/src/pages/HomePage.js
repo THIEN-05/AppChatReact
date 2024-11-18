@@ -45,7 +45,6 @@ function HomePage() {
         <input
           type='text'
           placeholder='Type something...'
-
         />
         <Button>Submit</Button>
       </div>
