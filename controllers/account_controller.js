@@ -41,5 +41,15 @@ module.exports = {
         } catch (error) {
             res.status(500).json("Error: " + error.message);
         }
+    },
+
+    displayAccount: async (req, res) => {
+        try {
+            const accounts = await accountModel.find();
+            res.status(200).json(accounts);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
     }
+
 };

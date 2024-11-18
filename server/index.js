@@ -6,10 +6,11 @@ const connectDB = require('../configs/dataBase');
 const port = 5000;
 const app = express();
 app.use(cors());
+const accountModel = require('../models/account_model'); // Import model
 
 app.use(express.json()); // Thêm middleware này để phân tích cú pháp JSON
 
-const { login, register } = require('../controllers/account_controller');
+const { displayAccount, login, register } = require('../controllers/account_controller');
 
 connectDB(); // Kết nối DB
 
@@ -18,6 +19,8 @@ connectDB(); // Kết nối DB
 // Lắng nghe request đăng ký và đăng nhập
 app.post('/users/signup', register);
 app.post('/users/signin', login);
+// Lắng nghe request lấy thông tin tài khoản
+app.get('/users/display', displayAccount);
 
 
 const server = http.createServer(app);
