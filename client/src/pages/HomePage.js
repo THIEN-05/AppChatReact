@@ -58,10 +58,6 @@ function HomePage() {
   return (
     <Container id='main-container' className='d-grid h-100'>
       <div className='messageContainer'>
-        <div className='tag'>
-          <h1 className='fixed-top d-grid h-100' id='chat-h'>#chatroom-public-test</h1>
-        </div>
-        <br /><br /><br /><br /><br />
         <ul className='messages'>
           {messages.sort((a, b) => a.messageCreationTime > b.messageCreationTime ? 1 : -1)
             .map(message => (
@@ -78,7 +74,7 @@ function HomePage() {
       <div className='messageBar fixed-bottom d-grid'>
         <input type="text" placeholder=" Text a message" id="msg-text" />
       </div>
-
+      
     </Container>
   )
 }
