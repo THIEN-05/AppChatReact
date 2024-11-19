@@ -46,7 +46,6 @@ function App() {
         theme: "light",
       });
       console.log("success!"); 
-      setTimeout(() => {navigate("/home")}, 1200);
     }).catch((error) => {
       console.log("error!");
       toast.error("Registration failed!", {

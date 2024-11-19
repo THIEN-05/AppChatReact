@@ -49,3 +49,20 @@
 .account-display li:hover {
   cursor: pointer;
 }
+
+.text-box > input{
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  position: fixed;
+  bottom: 0;
+  height: 10%;
+}
+.logout{
+  background-color: red;
+  position: fixed;
+  right: 20px;
+  border-radius: 10px;
+  color: white;
+  border: none;
+}

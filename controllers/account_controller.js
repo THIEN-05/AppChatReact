@@ -34,7 +34,7 @@ module.exports = {
             const account = await accountModel.findOne({ email, password });
 
             if (account) {
-                res.status(200).json("Login successful!");
+                res.status(200).json(account);
             } else {
                 res.status(400).json("Login failed!");
             }

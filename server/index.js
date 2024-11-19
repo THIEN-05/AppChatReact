@@ -11,6 +11,7 @@ const accountModel = require('../models/account_model'); // Import model
 app.use(express.json()); // Thêm middleware này để phân tích cú pháp JSON
 
 const { displayAccount, login, register } = require('../controllers/account_controller');
+const { log } = require('console');
 
 connectDB(); // Kết nối DB
 
