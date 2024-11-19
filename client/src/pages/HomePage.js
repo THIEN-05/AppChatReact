@@ -30,11 +30,11 @@ function HomePage() {
       });
   };
 
-  // Hiển thị tài khoản khi component được render
+  // Chạy liên tục để hiển thị danh sách tài khoản
   useEffect(() => {
     showAccount();
     setIdUserCurrent(localStorage.getItem('id'));
-  }, []);
+  });
 
 
   useEffect(() => {
@@ -44,14 +44,28 @@ function HomePage() {
       const messageContainer = document.querySelector('.messages');
       const newMessage = document.createElement('li');
       const finalMessage = document.createElement('p');
-      newMessage.classList.add(data.sender === id_user_current ? 'Send-message' : 'Receive-message');
+      // data.sender === id_user_current ? 'Send-message' : 
+      newMessage.classList.add('Receive-message');
       finalMessage.textContent = data.message;
       messageContainer.appendChild(newMessage);
       newMessage.appendChild(finalMessage);
     };
     socket.on('receive-message', handleReceiveMessage);
 
+    return () => {
+      // Xóa event listener khi component bị unmount (Bị gỡ khỏi cây DOM)
+      socket.off('receive-message', handleReceiveMessage);
+    };
+  },);
 
+
+  useEffect(() => {
+    // Xóa toàn bộ tin nhắn khi id_user_send thay đổi
+
+    const messageContainer = document.querySelector('.messages');
+    while (messageContainer.firstChild) {
+      messageContainer.removeChild(messageContainer.firstChild);
+    }
     // Load tin nhắn cũ khi kết nối với user khác
     socket.on('load-messages', (messages) => {
       const messageContainer = document.querySelector('.messages');
@@ -64,20 +78,9 @@ function HomePage() {
         newMessage.appendChild(finalMessage);
       });
     });
-
     return () => {
-      // Xóa event listener khi component bị unmount (Bị gỡ khỏi cây DOM)
-      socket.off('receive-message', handleReceiveMessage);
       socket.off('load-messages');
     };
-  }, [id_user_current]);
-
-  // Xóa toàn bộ tin nhắn khi id_user_send thay đổi
-  useEffect(() => {
-    const messageContainer = document.querySelector('.messages');
-    while (messageContainer.firstChild) {
-      messageContainer.removeChild(messageContainer.firstChild);
-    }
   }, [id_user_send]);
 
 
@@ -147,7 +150,9 @@ function HomePage() {
       <div className='right-rectangle'>
         <div className='messageContainer'>
           <ul className='messages'>
-            {/* Messages will be displayed here */}
+            {
+
+            }
           </ul>
         </div>
         <div className='text-box'>

@@ -50,7 +50,7 @@ io.on('connection', (socket) => {
         var room = Number(id_user_send) + Number(id_user_current);
         socket.join(room);
 
-        // Truy vấn và gửi lại tin nhắn đã lưu trữ
+        // Tìm kiếm dữ liệu trong room và sắp xếp theo thời gian, sau đó gửi dữ liệu về cho client
         const messages = await Message.find({ room }).sort({ timestamp: 1 });
         socket.emit('load-messages', messages);
     });
