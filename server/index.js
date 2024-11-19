@@ -7,6 +7,7 @@ const port = 5000;
 const app = express();
 app.use(cors());
 const accountModel = require('../models/account_model'); // Import model
+const Message = require('../models/message_model'); // Import model
 
 app.use(express.json()); // Thêm middleware này để phân tích cú pháp JSON
 
@@ -42,26 +43,32 @@ io.on('connection', (socket) => {
         console.log("A user disconnected");
     });
 
-    // Lắng nghe sự kiện join-room
-    socket.on('join-room', (data) => {
+    socket.on('join-room', async (data) => {
         console.log(data);
         var id_user_send = data.id_user_send;
         var id_user_current = data.id_user_current;
         var room = Number(id_user_send) + Number(id_user_current);
         socket.join(room);
 
+        // Truy vấn và gửi lại tin nhắn đã lưu trữ
+        const messages = await Message.find({ room }).sort({ timestamp: 1 });
+        socket.emit('load-messages', messages);
     });
 
-    // Lắng nghe sự kiện send-message
-    socket.on('send-message',(data) => {
+    socket.on('send-message', async (data) => {
         console.log(data);
         var room = Number(data.id_user_send) + Number(data.id_user_current);
         socket.to(room).emit('receive-message', data);
         console.log(room);
 
-    })
-
-
+        // Lưu tin nhắn vào MongoDB
+        const newMessage = new Message({
+            room,
+            sender: data.id_user_current,
+            message: data.message
+        });
+        await newMessage.save();
+    });
 });
 
 server.listen(port, () => {

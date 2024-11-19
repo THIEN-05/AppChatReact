@@ -39,20 +39,31 @@ function HomePage() {
       const messageContainer = document.querySelector('.messages');
       const newMessage = document.createElement('li');
       const finalMessage = document.createElement('p');
-      newMessage.classList.add('Receive-message');
+      newMessage.classList.add(data.sender === id_user_current ? 'Send-message' : 'Receive-message');
       finalMessage.textContent = data.message;
       messageContainer.appendChild(newMessage);
       newMessage.appendChild(finalMessage);
-      
     };
 
     socket.on('receive-message', handleReceiveMessage);
 
+    socket.on('load-messages', (messages) => {
+      const messageContainer = document.querySelector('.messages');
+      messages.forEach((msg) => {
+        const newMessage = document.createElement('li');
+        newMessage.classList.add(msg.sender === id_user_current ? 'Send-message' : 'Receive-message');
+        const finalMessage = document.createElement('p');
+        finalMessage.textContent = msg.message;
+        messageContainer.appendChild(newMessage);
+        newMessage.appendChild(finalMessage);
+      });
+    });
+
     return () => {
       socket.off('receive-message', handleReceiveMessage);
+      socket.off('load-messages');
     };
-
-  }, [socket]);
+  }, [id_user_current]);
 
   // Xóa toàn bộ tin nhắn khi id_user_send thay đổi
   useEffect(() => {
@@ -97,7 +108,6 @@ function HomePage() {
         message: text
       });
       event.target.value = '';
-      
     }
   };
 
@@ -132,8 +142,6 @@ function HomePage() {
             type="text"
             placeholder="Text a message"
             id="msg-text"
-            // value={message}
-            // onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleSendMessage}
           />
         </div>
