@@ -6,8 +6,8 @@ const connectDB = require('../configs/dataBase');
 const port = 5000;
 const app = express();
 app.use(cors());
-const accountModel = require('../models/account_model'); // Import model
-
+const accountModel = require('../models/account_model'); // Import model account
+const messgaeModel = require('../models/message_model'); // Import model messgae
 app.use(express.json()); // Thêm middleware này để phân tích cú pháp JSON
 
 const { displayAccount, login, register } = require('../controllers/account_controller');
@@ -43,21 +43,33 @@ io.on('connection', (socket) => {
     });
 
     // Lắng nghe sự kiện join-room
-    socket.on('join-room', (data) => {
+    socket.on('join-room', async (data) => {
         console.log(data);
         var id_user_send = data.id_user_send;
         var id_user_current = data.id_user_current;
         var room = Number(id_user_send) + Number(id_user_current);
         socket.join(room);
 
+        // Phục hồi tin nhắn
+        const messages = await messgaeModel.find({ room }).sort({ timestamp: 1 });
+        socket.emit('chat-history', messages);
     });
 
-    // Lắng nghe sự kiện send-message
-    socket.on('send-message',(data) => {
+    // Lắng nghe sự kiện gửi tin nhắn đến server
+    socket.on('send-message', async (data) => {
         console.log(data);
         var room = Number(data.id_user_send) + Number(data.id_user_current);
+
+        // Tạo một tin nhắn mới và lưu vào DB
+        const newMessage = new messgaeModel({
+            room: room,
+            sender: data.id_user_current,
+            message: data.message
+        });
+        await newMessage.save();
+
+        // Gửi tin nhắn đến các user trong phòng chat
         socket.to(room).emit('receive-message', data);
-        console.log(room);
 
     })
 

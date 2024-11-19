@@ -88,12 +88,12 @@ p{
   border-radius:10px ;
   padding: 10px;
 }
-li.Receive-message{
+li p.Receive-message{
   float: left;
   clear: both;
   margin-bottom: 10px; /* Thêm khoảng cách giữa các tin nhắn */
 }
-li.Send-message{
+li p.Send-message{
   float: right;
   clear: both;
   padding-right: 10px;

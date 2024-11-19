@@ -27,34 +27,46 @@ function HomePage() {
         console.error("There was an error fetching the accounts!", error);
       });
   };
-
   useEffect(() => {
     showAccount();
     setIdUserCurrent(localStorage.getItem('id'));
   }, []);
- 
+
 
   useEffect(() => {
     const handleReceiveMessage = (data) => {
       const messageContainer = document.querySelector('.messages');
       const newMessage = document.createElement('li');
       const finalMessage = document.createElement('p');
-      newMessage.classList.add('Receive-message');
+      finalMessage.classList.add(data.sender === id_user_current ? 'Send-message' : 'Receive-message');
       finalMessage.textContent = data.message;
-      messageContainer.appendChild(newMessage);
       newMessage.appendChild(finalMessage);
-      
+      messageContainer.appendChild(newMessage);
     };
-
+  
+    const handleChatHistory = (messages) => {
+      const messageContainer = document.querySelector('.messages');
+      messages.forEach((msg) => {
+        const newMessage = document.createElement('li');
+        const finalMessage = document.createElement('p');
+        finalMessage.classList.add(msg.owner === id_user_current ? 'Send-message' : 'Receive-message');
+        finalMessage.textContent = msg.message;
+        newMessage.appendChild(finalMessage);
+        messageContainer.appendChild(newMessage);
+      });
+    };
+  
     socket.on('receive-message', handleReceiveMessage);
-
+    socket.on('chat-history', handleChatHistory);
+  
     return () => {
       socket.off('receive-message', handleReceiveMessage);
+      socket.off('chat-history', handleChatHistory);
     };
+  }, [socket, id_user_current]);
 
-  }, [socket]);
 
-  // Xóa toàn bộ tin nhắn khi id_user_send thay đổi
+
   useEffect(() => {
     const messageContainer = document.querySelector('.messages');
     while (messageContainer.firstChild) {
@@ -71,6 +83,8 @@ function HomePage() {
     alert(`Kết nối được với user ${id}`);
   };
 
+
+
   const handleLogout = () => {
     localStorage.removeItem('username');
     localStorage.removeItem('email');
@@ -78,26 +92,26 @@ function HomePage() {
     setTimeout(() => { navigate("/") }, 500);
   };
 
+
+
   const handleSendMessage = (event) => {
     if (event.key === 'Enter') {
       const text = event.target.value;
       setMessage(text);
-
       const messageContainer = document.querySelector('.messages');
       const newMessage = document.createElement('li');
       const finalMessage = document.createElement('p');
-      newMessage.classList.add('Send-message');
+      finalMessage.classList.add('Send-message');
       finalMessage.textContent = text;
       messageContainer.appendChild(newMessage);
       newMessage.appendChild(finalMessage);
-
       socket.emit('send-message', {
         id_user_send: id_user_send,
         id_user_current: id_user_current,
         message: text
       });
       event.target.value = '';
-      
+
     }
   };
 
@@ -132,8 +146,8 @@ function HomePage() {
             type="text"
             placeholder="Text a message"
             id="msg-text"
-            // value={message}
-            // onChange={(e) => setMessage(e.target.value)}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleSendMessage}
           />
         </div>
