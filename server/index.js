@@ -12,6 +12,7 @@ app.use(express.json()); // Thêm middleware này để phân tích cú pháp JS
 
 const { displayAccount, login, register } = require('../controllers/account_controller');
 const { log } = require('console');
+const { join } = require('path');
 
 connectDB(); // Kết nối DB
 
@@ -40,6 +41,27 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log("A user disconnected");
     });
+
+    // Lắng nghe sự kiện join-room
+    socket.on('join-room', (data) => {
+        console.log(data);
+        var id_user_send = data.id_user_send;
+        var id_user_current = data.id_user_current;
+        var room = Number(id_user_send) + Number(id_user_current);
+        socket.join(room);
+
+    });
+
+    // Lắng nghe sự kiện send-message
+    socket.on('send-message',(data) => {
+        console.log(data);
+        var room = Number(data.id_user_send) + Number(data.id_user_current);
+        socket.to(room).emit('receive-message', data);
+        console.log(room);
+
+    })
+
+
 });
 
 server.listen(port, () => {

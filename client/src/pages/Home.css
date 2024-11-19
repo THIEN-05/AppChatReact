@@ -21,7 +21,7 @@
   right: 0;
   top: 0;
   z-index: 2;
-  overflow: auto;
+ 
 }
 
 .account-display {
@@ -45,18 +45,27 @@
 .account-display li p:first-child {
   padding-bottom: 0;
 }
-
+.account-display li p:last-child {
+  padding-top: 0;
+}
 .account-display li:hover {
   cursor: pointer;
 }
-
+.messageContainer{
+  height: 90vh;
+  overflow: auto;
+  overflow-y: auto;
+}
+.text-box{
+  height: 10vh;
+}
 .text-box > input{
   width: 100%;
   background-color: transparent;
   border: none;
   position: fixed;
   bottom: 0;
-  height: 10%;
+  height: 10vh;
 }
 .logout{
   background-color: red;
@@ -65,4 +74,28 @@
   border-radius: 10px;
   color: white;
   border: none;
+}
+p{
+  margin: 0;
+}
+.messages li {
+  padding-top: 10px;
+  margin: 0;
+  list-style-type: none;
+}
+.messages li p{
+  background-color: darkgrey;
+  border-radius:10px ;
+  padding: 10px;
+}
+li.Receive-message{
+  float: left;
+  clear: both;
+  margin-bottom: 10px; /* Thêm khoảng cách giữa các tin nhắn */
+}
+li.Send-message{
+  float: right;
+  clear: both;
+  padding-right: 10px;
+  margin-bottom: 10px; /* Thêm khoảng cách giữa các tin nhắn */
 }
