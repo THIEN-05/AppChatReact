@@ -17,9 +17,11 @@ function HomePage() {
   const email = localStorage.getItem('email');
   const [message, setMessage] = useState('');
 
+
   const showAccount = () => {
     Axios.get('http://localhost:5000/users/display')
       .then((response) => {
+        // Lọc các tài khoản không phải của người dùng hiện tại
         const filteredAccounts = response.data.filter(account => (account.username !== username && account.email !== email));
         setAccounts(filteredAccounts);
       })
@@ -28,13 +30,16 @@ function HomePage() {
       });
   };
 
+  // Hiển thị tài khoản khi component được render
   useEffect(() => {
     showAccount();
     setIdUserCurrent(localStorage.getItem('id'));
   }, []);
- 
+
 
   useEffect(() => {
+    // Sẽ chạy mỗi khi nhận được dữ liệu từ server
+    // Hiển thị ra dữ liệu
     const handleReceiveMessage = (data) => {
       const messageContainer = document.querySelector('.messages');
       const newMessage = document.createElement('li');
@@ -44,9 +49,10 @@ function HomePage() {
       messageContainer.appendChild(newMessage);
       newMessage.appendChild(finalMessage);
     };
-
     socket.on('receive-message', handleReceiveMessage);
 
+
+    // Load tin nhắn cũ khi kết nối với user khác
     socket.on('load-messages', (messages) => {
       const messageContainer = document.querySelector('.messages');
       messages.forEach((msg) => {
@@ -60,6 +66,7 @@ function HomePage() {
     });
 
     return () => {
+      // Xóa event listener khi component bị unmount (Bị gỡ khỏi cây DOM)
       socket.off('receive-message', handleReceiveMessage);
       socket.off('load-messages');
     };
@@ -73,6 +80,8 @@ function HomePage() {
     }
   }, [id_user_send]);
 
+
+  // Kết nối 2 user vào chung 1 room
   const handleAccountClick = async (id) => {
     setIdUserSend(id);
     socket.emit('join-room', {
@@ -82,6 +91,8 @@ function HomePage() {
     alert(`Kết nối được với user ${id}`);
   };
 
+
+  // Xử lý đăng xuất
   const handleLogout = () => {
     localStorage.removeItem('username');
     localStorage.removeItem('email');
@@ -89,6 +100,8 @@ function HomePage() {
     setTimeout(() => { navigate("/") }, 500);
   };
 
+
+  // Xử lý gửi tin nhắn
   const handleSendMessage = (event) => {
     if (event.key === 'Enter') {
       const text = event.target.value;
