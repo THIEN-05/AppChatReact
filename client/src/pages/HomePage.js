@@ -1,82 +1,145 @@
-import { Container, Form, Button } from 'react-bootstrap';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
+import io from "socket.io-client";
+import { Container, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Axios from "axios";
 import './Home.css';
-import io from "socket.io-client";
-// Kết nối tới server
+const connectDB = require('../dataBase');
+connectDB();
 const socket = io("http://localhost:5000");
 
-
 function HomePage() {
-  const [messages, setMessages] = useState([]);
   const navigate = useNavigate();
+  const [accounts, setAccounts] = useState([]);
+  const [id_user_send, setIdUserSend] = useState('');
+  const [id_user_current, setIdUserCurrent] = useState('');
+  const username = localStorage.getItem('username');
+  const email = localStorage.getItem('email');
+  const [message, setMessage] = useState('');
 
-  const json2Array = (json) => {
-    var result = [];
-    var keys = Object.keys(json);
-    keys.forEach(function (key) {
-      result.push(json[key]);
-    });
-    return result;
-  };
-
-  const returnUsername = () => {
-    Axios.get("ahshasd")
-  }
-
-  const getAllMessages = () => {
-    Axios.get("http://localhost:8000/apiv1/messages/getAll")
+  const showAccount = () => {
+    Axios.get('http://localhost:5000/users/display')
       .then((response) => {
-        const allMessages = response.data;
-        setMessages(json2Array(allMessages));
-        setTimeout(() => { getAllMessages() }, 3000);
-      }).catch((error) => {
-        console.log(error);
-      });
-  }
-
-  // Mỗi lần có sự kiện gì từ server thì sẽ chạy hàm getAllMessages
-  useEffect(() => {
-    getAllMessages()
-  }, [])
-
-  const checkAuth = () => {
-    Axios.get("http://localhost:8000/apiv1/users/getAuth")
-      .then((response) => {
-        console.log(response);
+        const filteredAccounts = response.data.filter(account => (account.username !== username && account.email !== email));
+        setAccounts(filteredAccounts);
       })
       .catch((error) => {
-        //navigate("/login");
-        //ATTENTION: I NEED TO REPAIR AUTH SYSTEM!
+        console.error("There was an error fetching the accounts!", error);
       });
-  }
-  checkAuth();
+  };
+
+  useEffect(() => {
+    showAccount();
+    setIdUserCurrent(localStorage.getItem('id'));
+  }, []);
+ 
+
+  useEffect(() => {
+    const handleReceiveMessage = (data) => {
+      const messageContainer = document.querySelector('.messages');
+      const newMessage = document.createElement('li');
+      const finalMessage = document.createElement('p');
+      newMessage.classList.add('Receive-message');
+      finalMessage.textContent = data.message;
+      messageContainer.appendChild(newMessage);
+      newMessage.appendChild(finalMessage);
+      
+    };
+
+    socket.on('receive-message', handleReceiveMessage);
+
+    return () => {
+      socket.off('receive-message', handleReceiveMessage);
+    };
+
+  }, [socket]);
+
+  // Xóa toàn bộ tin nhắn khi id_user_send thay đổi
+  useEffect(() => {
+    const messageContainer = document.querySelector('.messages');
+    while (messageContainer.firstChild) {
+      messageContainer.removeChild(messageContainer.firstChild);
+    }
+  }, [id_user_send]);
+
+  const handleAccountClick = async (id) => {
+    setIdUserSend(id);
+    socket.emit('join-room', {
+      id_user_send: id,
+      id_user_current: id_user_current
+    });
+    alert(`Kết nối được với user ${id}`);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('username');
+    localStorage.removeItem('email');
+    localStorage.removeItem('id');
+    setTimeout(() => { navigate("/") }, 500);
+  };
+
+  const handleSendMessage = (event) => {
+    if (event.key === 'Enter') {
+      const text = event.target.value;
+      setMessage(text);
+
+      const messageContainer = document.querySelector('.messages');
+      const newMessage = document.createElement('li');
+      const finalMessage = document.createElement('p');
+      newMessage.classList.add('Send-message');
+      finalMessage.textContent = text;
+      messageContainer.appendChild(newMessage);
+      newMessage.appendChild(finalMessage);
+
+      socket.emit('send-message', {
+        id_user_send: id_user_send,
+        id_user_current: id_user_current,
+        message: text
+      });
+      event.target.value = '';
+      
+    }
+  };
 
   return (
     <Container id='main-container' className='d-grid h-100'>
-      <div className='messageContainer'>
-        <ul className='messages'>
-          {messages.sort((a, b) => a.messageCreationTime > b.messageCreationTime ? 1 : -1)
-            .map(message => (
-              <li id='li-obj' key={message.messageCreationTime}>
-                <div className='message mb-4 position-relative'>
-                  <h4>{message.senderMail}</h4>
-                  <h5 className='msg-txt'>{message.message.message}</h5>
-                </div>
-              </li>
-            ))}
+      <div className='left-rectangle'>
+        <button className="logout" onClick={handleLogout}>Logout</button>
+        <h2>User: </h2>
+        <p>Username: {username}</p>
+        <p>Email: {email}</p>
+        <p>id: {id_user_current}</p>
+        <p>Đang kết nối với user id: {id_user_send}</p>
+        <h2>Accounts</h2>
+        <ul className='account-display'>
+          {accounts.map((account) => (
+            <li key={account._id} onClick={() => handleAccountClick(account.id)}>
+              <p>Username: {account.username}</p>
+              <p>Email: {account.email}</p>
+              <p>id: {account.id}</p>
+            </li>
+          ))}
         </ul>
       </div>
-      <br /><br /><br /><br />
-      <div className='messageBar fixed-bottom d-grid'>
-        <input type="text" placeholder=" Text a message" id="msg-text" />
+      <div className='right-rectangle'>
+        <div className='messageContainer'>
+          <ul className='messages'>
+            {/* Messages will be displayed here */}
+          </ul>
+        </div>
+        <div className='text-box'>
+          <input
+            type="text"
+            placeholder="Text a message"
+            id="msg-text"
+            // value={message}
+            // onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleSendMessage}
+          />
+        </div>
       </div>
-      
     </Container>
-  )
+  );
 }
 
 export default HomePage;

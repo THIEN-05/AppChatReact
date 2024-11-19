@@ -1,67 +1,101 @@
-#chat-h {
-    text-align: center;
-    margin: 1%;
-    display: block;
+.left-rectangle {
+  width: 30%;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  overflow: auto;
 }
 
-.tag{
-    margin-top: 1%;
-    padding: 30px 300px;
-    background: rgba(255, 255, 255, 0.062);
-    backdrop-filter: blur(6px);
-    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.055);
-    border-radius: 12px;
-    position: fixed;
-    z-index: 1;
+.right-rectangle {
+  width: 70%;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.1);
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 2;
+ 
 }
 
-.message {
-    background: rgba(255, 255, 255, 0.062);
-    backdrop-filter: blur(20px);
-    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.055);
-    border-radius: 12px;
-    border: 5px solid rgba(132, 99, 194, 0.308);
-    padding: 30px;
-    inline-size: 500px;
-    overflow-wrap: break-word;
-    color: rgb(211, 211, 211);
-    float: left;
+.account-display {
+  list-style-type: none;
+  padding: 0;
+
 }
 
-#li-obj{
-    list-style: none;
+.account-display li {
+  background-color: darkgrey;
+  border-radius: 10px;
+  margin: 10px;
 }
 
-#msg-text{
-    width: 100%;
-    background: rgba(255, 255, 255, 0.062);
-    backdrop-filter: blur(6px);
-    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.055);
-    border: none;
-    height: 75px;
+.account-display li p {
+  margin: 0;
+  padding: 10px;
+  color: black;
 }
 
-#msg-text:focus{
-    outline: none;
+.account-display li p:first-child {
+  padding-bottom: 0;
 }
-
-#msg-text::placeholder{
-    color: white;
-    font-size: large;
-    font-weight: 600;
+.account-display li p:last-child {
+  padding-top: 0;
 }
-
-.messageBar{
-    width: 100%;
-    background: rgba(255, 255, 255, 0.062);
-    backdrop-filter: blur(6px);
-    box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.055);
-    border-radius: 8px;
-    height: 75px;
+.account-display li:hover {
+  cursor: pointer;
 }
-
-.msg-txt{
-    display: block;
-    inline-size: 300px;
-    overflow-wrap: break-word;
+.messageContainer{
+  height: 90vh;
+  overflow: auto;
+  overflow-y: auto;
+}
+.text-box{
+  height: 10vh;
+}
+.text-box > input{
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  position: fixed;
+  bottom: 0;
+  height: 10vh;
+}
+.logout{
+  background-color: red;
+  position: fixed;
+  right: 20px;
+  border-radius: 10px;
+  color: white;
+  border: none;
+}
+p{
+  margin: 0;
+}
+.messages li {
+  padding-top: 10px;
+  margin: 0;
+  list-style-type: none;
+}
+.messages li p{
+  background-color: darkgrey;
+  border-radius:10px ;
+  padding: 10px;
+}
+li.Receive-message{
+  float: left;
+  clear: both;
+  margin-bottom: 10px; /* Thêm khoảng cách giữa các tin nhắn */
+}
+li.Send-message{
+  float: right;
+  clear: both;
+  padding-right: 10px;
+  margin-bottom: 10px; /* Thêm khoảng cách giữa các tin nhắn */
 }

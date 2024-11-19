@@ -27,7 +27,11 @@ function LoginPage() {
       password,
       email
     }).then((response) => {
-      console.log("success!");
+
+      localStorage.setItem('username', response.data.username);
+      localStorage.setItem('email', email);
+      localStorage.setItem('id', response.data.id);
+
       toast.success("You have successfully logged in!", {
         position: "top-right",
         autoClose: 800,
@@ -38,7 +42,7 @@ function LoginPage() {
         progress: undefined,
         theme: "light",
       });
-      setTimeout(() => {navigate("/home")}, 1200);
+      setTimeout(() => { navigate("/home") }, 1200);
     }).catch((error) => {
       console.log("error!");
       toast.error("Login failed!", {

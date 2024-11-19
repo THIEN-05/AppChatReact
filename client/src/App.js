@@ -11,7 +11,7 @@ function App() {
   const [password, setPass] = useState('');
   const [username, setUsername] = useState('');
   const [email, setMail] = useState('');
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const passwordSet = event => {
     const newPassword = event.target.value;
@@ -45,8 +45,8 @@ function App() {
         progress: undefined,
         theme: "light",
       });
-      console.log("success!"); 
-      setTimeout(() => {navigate("/home")}, 1200);
+      console.log("success!");
+      setTimeout(() => { navigate("/home") }, 1200);
     }).catch((error) => {
       console.log("error!");
       toast.error("Registration failed!", {

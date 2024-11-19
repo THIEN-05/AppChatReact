@@ -34,12 +34,22 @@ module.exports = {
             const account = await accountModel.findOne({ email, password });
 
             if (account) {
-                res.status(200).json("Login successful!");
+                res.status(200).json(account);
             } else {
                 res.status(400).json("Login failed!");
             }
         } catch (error) {
             res.status(500).json("Error: " + error.message);
         }
+    },
+
+    displayAccount: async (req, res) => {
+        try {
+            const accounts = await accountModel.find();
+            res.status(200).json(accounts);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
     }
+
 };
