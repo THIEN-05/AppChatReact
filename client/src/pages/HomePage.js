@@ -17,9 +17,11 @@ function HomePage() {
   const email = localStorage.getItem('email');
   const [message, setMessage] = useState('');
 
+
   const showAccount = () => {
     Axios.get('http://localhost:5000/users/display')
       .then((response) => {
+        // Lọc các tài khoản không phải của người dùng hiện tại
         const filteredAccounts = response.data.filter(account => (account.username !== username && account.email !== email));
         setAccounts(filteredAccounts);
       })
@@ -27,53 +29,63 @@ function HomePage() {
         console.error("There was an error fetching the accounts!", error);
       });
   };
+
+  // Chạy liên tục để hiển thị danh sách tài khoản
   useEffect(() => {
     showAccount();
     setIdUserCurrent(localStorage.getItem('id'));
-  }, []);
+  });
 
 
   useEffect(() => {
+    // Sẽ chạy mỗi khi nhận được dữ liệu từ server
+    // Hiển thị ra dữ liệu
     const handleReceiveMessage = (data) => {
       const messageContainer = document.querySelector('.messages');
       const newMessage = document.createElement('li');
       const finalMessage = document.createElement('p');
-      finalMessage.classList.add(data.sender === id_user_current ? 'Send-message' : 'Receive-message');
+      // data.sender === id_user_current ? 'Send-message' : 
+      newMessage.classList.add('Receive-message');
       finalMessage.textContent = data.message;
       newMessage.appendChild(finalMessage);
-      messageContainer.appendChild(newMessage);
     };
-  
-    const handleChatHistory = (messages) => {
-      const messageContainer = document.querySelector('.messages');
-      messages.forEach((msg) => {
-        const newMessage = document.createElement('li');
-        const finalMessage = document.createElement('p');
-        finalMessage.classList.add(msg.owner === id_user_current ? 'Send-message' : 'Receive-message');
-        finalMessage.textContent = msg.message;
-        newMessage.appendChild(finalMessage);
-        messageContainer.appendChild(newMessage);
-      });
-    };
-  
     socket.on('receive-message', handleReceiveMessage);
     socket.on('chat-history', handleChatHistory);
   
     return () => {
+      // Xóa event listener khi component bị unmount (Bị gỡ khỏi cây DOM)
       socket.off('receive-message', handleReceiveMessage);
       socket.off('chat-history', handleChatHistory);
     };
-  }, [socket, id_user_current]);
-
+  },);
 
 
   useEffect(() => {
+    // Xóa toàn bộ tin nhắn khi id_user_send thay đổi
+
     const messageContainer = document.querySelector('.messages');
     while (messageContainer.firstChild) {
       messageContainer.removeChild(messageContainer.firstChild);
     }
+    // Load tin nhắn cũ khi kết nối với user khác
+    socket.on('load-messages', (messages) => {
+      const messageContainer = document.querySelector('.messages');
+      messages.forEach((msg) => {
+        const newMessage = document.createElement('li');
+        newMessage.classList.add(msg.sender === id_user_current ? 'Send-message' : 'Receive-message');
+        const finalMessage = document.createElement('p');
+        finalMessage.textContent = msg.message;
+        messageContainer.appendChild(newMessage);
+        newMessage.appendChild(finalMessage);
+      });
+    });
+    return () => {
+      socket.off('load-messages');
+    };
   }, [id_user_send]);
 
+
+  // Kết nối 2 user vào chung 1 room
   const handleAccountClick = async (id) => {
     setIdUserSend(id);
     socket.emit('join-room', {
@@ -84,7 +96,7 @@ function HomePage() {
   };
 
 
-
+  // Xử lý đăng xuất
   const handleLogout = () => {
     localStorage.removeItem('username');
     localStorage.removeItem('email');
@@ -93,7 +105,7 @@ function HomePage() {
   };
 
 
-
+  // Xử lý gửi tin nhắn
   const handleSendMessage = (event) => {
     if (event.key === 'Enter') {
       const text = event.target.value;
@@ -111,7 +123,6 @@ function HomePage() {
         message: text
       });
       event.target.value = '';
-
     }
   };
 
@@ -138,7 +149,9 @@ function HomePage() {
       <div className='right-rectangle'>
         <div className='messageContainer'>
           <ul className='messages'>
-            {/* Messages will be displayed here */}
+            {
+
+            }
           </ul>
         </div>
         <div className='text-box'>
@@ -146,8 +159,6 @@ function HomePage() {
             type="text"
             placeholder="Text a message"
             id="msg-text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleSendMessage}
           />
         </div>
