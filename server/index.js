@@ -7,7 +7,7 @@ const port = 5000;
 const app = express();
 app.use(cors());
 const accountModel = require('../models/account_model'); // Import model
-const Message = require('../models/message_model'); // Import model
+const messgaeModel = require('../models/message_model'); // Import model
 
 app.use(express.json()); // Thêm middleware này để phân tích cú pháp JSON
 
@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
         socket.join(room);
 
         // Tìm kiếm dữ liệu trong room và sắp xếp theo thời gian, sau đó gửi dữ liệu về cho client
-        const messages = await Message.find({ room }).sort({ timestamp: 1 });
+        const messages = await messgaeModel.find({ room }).sort({ timestamp: 1 });
         socket.emit('load-messages', messages);
     });
 

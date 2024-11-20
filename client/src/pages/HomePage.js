@@ -50,19 +50,16 @@ function HomePage() {
       newMessage.appendChild(finalMessage);
     };
     socket.on('receive-message', handleReceiveMessage);
-    socket.on('chat-history', handleChatHistory);
-  
+
     return () => {
       // Xóa event listener khi component bị unmount (Bị gỡ khỏi cây DOM)
       socket.off('receive-message', handleReceiveMessage);
-      socket.off('chat-history', handleChatHistory);
     };
   },);
 
 
   useEffect(() => {
     // Xóa toàn bộ tin nhắn khi id_user_send thay đổi
-
     const messageContainer = document.querySelector('.messages');
     while (messageContainer.firstChild) {
       messageContainer.removeChild(messageContainer.firstChild);
@@ -92,9 +89,8 @@ function HomePage() {
       id_user_send: id,
       id_user_current: id_user_current
     });
-    alert(`Kết nối được với user ${id}`);
+    
   };
-
 
   // Xử lý đăng xuất
   const handleLogout = () => {
